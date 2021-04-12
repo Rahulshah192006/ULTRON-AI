@@ -1,4 +1,5 @@
 
+from Draw.amongus import Amongus
 from math import trunc
 from subprocess import check_output
 import pyttsx3
@@ -12,6 +13,7 @@ import imutils
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as soup
 import pyowm
+from Draw import *
 import time
 import cv2
 import os
@@ -219,9 +221,9 @@ def greetMe():
 
 greetMe()
 speak("Initialising system")
-ProgressBar()
+#ProgressBar()
 speak("Security Check is going on")
-ProgressBar()
+#ProgressBar()
 speak('Hello Sir, I am your digital ULTRON')
 speak('i will Work always for you')
 
@@ -283,8 +285,9 @@ def spotify():
 
 
 
-   
+  
 if __name__ == "__main__":
+        
     
 
     while True:   
@@ -302,7 +305,7 @@ if __name__ == "__main__":
                 except:
                    speak("no query selected plz select a query")
 
-            if "Translate this" in query:
+            if "translate this" in query:
                 translator()
  
             if "news from google" in query:
@@ -313,7 +316,14 @@ if __name__ == "__main__":
 
             if "news from home" in query:
                 AjaTak()
+            
+            if "class" in query:
+                MsTeam.Team()
 
+            if "ultron" in query:
+                Amongus()
+                
+                
 
             
 
@@ -479,7 +489,7 @@ if __name__ == "__main__":
 
 
             elif "lot" in query:
-                ip = get('https://api.ipify.org').query
+                ip = get('https://api.ipify.org').text
                 speak(f"your IP address is {ip}")
 
                 
@@ -789,16 +799,17 @@ if __name__ == "__main__":
                     speak("ACCESS DENIED")
                     speak("you are not Rahul i can not give you my sir information")
 
-            elif "Lmy account" in query:
+            elif "my account" in query:
                 usename = environ.get('ICICIUSERNAME')
                 passwd = environ.get('ICICI_PASSWD')
                 password  = input("YOUR PASSWORD TO KNOW YOUR BANK DETAILS")
                 if password == os.environ['password_rahul']:
                     speak('ACCESS GRANT')
-                    speak(f"sir your email is {usename} this and password is {passwd}")
+                    speak(f"sir your Bank ID is {usename} this and password is {passwd}")
                 else:
                     speak("ACCESS DENIED")
                     speak("you are not Rahul i can not give you my sir information")
+                    sys.exit()
                 
 
 
