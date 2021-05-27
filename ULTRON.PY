@@ -1,5 +1,4 @@
 
-from Draw.amongus import Amongus
 from math import trunc
 from subprocess import check_output
 import pyttsx3
@@ -13,7 +12,6 @@ import imutils
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as soup
 import pyowm
-from Draw import *
 import time
 import cv2
 import os
@@ -38,7 +36,7 @@ from requests import get
 import datetime
 import wolframalpha
 import pyautogui as pg
-from os import environ
+from os import environ, stat
 import os
 import sys
 from tqdm import tqdm
@@ -91,13 +89,16 @@ engine = pyttsx3.init('sapi5')
 client = wolframalpha.Client('R7A69X-LQE32TVWX7')
 
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[len(voices)-6].id)
+engine.setProperty('voice', voices[len(voices)-1].id)
 
 
 def speak(audio):
     print('ULTRON: ' + audio)
     engine.say(audio)
     engine.runAndWait()
+
+def Tic():
+    print(Start)
 
 def translator():
     speak("ok sir give some information to do this")
@@ -221,9 +222,9 @@ def greetMe():
 
 greetMe()
 speak("Initialising system")
-#ProgressBar()
+ProgressBar()
 speak("Security Check is going on")
-#ProgressBar()
+ProgressBar()
 speak('Hello Sir, I am your digital ULTRON')
 speak('i will Work always for you')
 
@@ -299,6 +300,9 @@ if __name__ == "__main__":
                 speak('okay')
                 webbrowser.open('www.youtube.com')
 
+            if "Game" in query:
+                Tic()
+
             if "read" in query:
                 try:
                     read()
@@ -320,8 +324,7 @@ if __name__ == "__main__":
             if "class" in query:
                 MsTeam.Team()
 
-            if "ultron" in query:
-                Amongus()
+                
                 
                 
 
@@ -399,9 +402,6 @@ if __name__ == "__main__":
 
             if "go to top" in query:
                         pg.hotkey('home')
-
-            if "repeat my speech" in query:
-                repeatmyspeech()
 
             elif "Introduce yourself" in query:
                 speak("Okay,Let me start by The time I was born,,")
@@ -858,9 +858,6 @@ if __name__ == "__main__":
                 spath = "C:\\Users\\ytgam\\AppData\\Roaming\\.minecraft\\TLauncher.exe"
                 os.startfile(spath)
             elif 'open github' in query:
-                speak('okay')
-                webbrowser.open('https://github.com')
-            elif 'Yadunath' in query:
                 speak('okay')
                 webbrowser.open('https://github.com')
             elif 'open discord' in query:

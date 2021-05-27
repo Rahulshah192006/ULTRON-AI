@@ -1,5 +1,5 @@
 # ULTRON_voice_assistant.py😎 
-Joe is a personal voice assistant made using python programming language.
+Ultron is a personal voice assistant made using python programming language.
 
 # Getting  Started🧐 
 ULTRON needs python installed on your computer and any code editor.
