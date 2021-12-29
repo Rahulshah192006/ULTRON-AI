@@ -3,11 +3,10 @@ from math import trunc
 from subprocess import check_output
 import pyttsx3
 import numpy as np
-import pyzbar.pyzbar as pyzbar
 import cv2
 from moviepy.editor import *
 from twilio.rest import Client
-from translate import Translator
+from state import state
 import imutils
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as soup
@@ -15,6 +14,7 @@ import pyowm
 import time
 import cv2
 import os
+import speedtest
 import turtle
 import time
 from bs4 import BeautifulSoup as soup
@@ -64,10 +64,8 @@ import pyttsx3
 
 
 engine = pyttsx3.init('sapi5')
+
 voice = engine.getProperty('voices')
-def speak(audio):
-  	engine.say(audio)
-  	engine.runAndWait()
 
 def ProgressBar():
     for i in tqdm(range(5)):
@@ -89,7 +87,7 @@ engine = pyttsx3.init('sapi5')
 client = wolframalpha.Client('R7A69X-LQE32TVWX7')
 
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[len(voices)-1].id)
+engine.setProperty('voice', voices[len(voices)-3    ].id)
 
 
 def speak(audio):
@@ -112,12 +110,39 @@ def translator():
     translate = langs.trans(f"{text}")
     print(translate)
 
+def AddContact():
+        speak(f'Boss, Enter the contact details')
+        name = input("Enter the name :").lower()
+        number = input("Enter the number :")
+        NumberFormat = f'"{name}":"+91{number}"'
+        ContFile = open("Contacts.txt", "a") 
+        ContFile.write(f"{NumberFormat}\n")
+        ContFile.close()
+        speak(f'Boss, Contact Saved Successfully')
 
-
-
+def SearchCont():
+        with open("Contacts.txt","r") as ContactsFile:
+            for line in ContactsFile:
+                if name in line:
+                    speak("Name Match Found")
+                    s = line.split("\"")
+                    return s[1],s[3],True
+        return 0,0,False
 
     
-
+def Display():
+        ContactsFile = open("Contacts.txt","r")
+        count=0
+        for line in ContactsFile:
+            count+=1
+        ContactsFile.close()
+        ContactsFile = open("Contacts.txt","r")
+        speak(f"Boss displaying the {count} contacts stored in our data base")    
+        for line in ContactsFile:
+            s = line.split("\"")
+            print("Name: "+s[1])
+            print("Number: "+s[3])
+        ContactsFile.close()
 
 
 
@@ -220,15 +245,26 @@ def greetMe():
     if currentH >= 18 and currentH !=0:
         speak('Good Evening!')
 
-greetMe()
-speak("Initialising system")
-ProgressBar()
-speak("Security Check is going on")
-ProgressBar()
-speak('Hello Sir, I am your digital ULTRON')
-speak('i will Work always for you')
-
-
+def shedule(self):
+        day = self.Cal_day().lower()
+        self.talk("Boss today's shedule is")
+        Week = {"monday" : "Boss from 9:00 to 9:50 you have Hindi Class, from 9:50 to 11:50 you have mechanics class, from 12:00 to 2:00 you have brake, and today you have sensors lab from 2:00",
+        "tuesday" : "Boss from 9:00 to 9:50 you have English class, from 10:00 to 10:50 you have break,from 11:00 to 12:50 you have ELectrical class, from 1:00 to 2:00 you have brake, and today you have biology lab from 2:00",
+        "wednesday" : "Boss today you have a full day of classes from 9:00 to 10:50 you have Data structures class, from 11:00 to 11:50 you have mechanics class, from 12:00 to 12:50 you have cultural class, from 1:00 to 2:00 you have brake, and today you have Data structures lab from 2:00",
+        "thrusday" : "Boss today you have a full day of classes from 9:00 to 10:50 you have Maths class, from 11:00 to 12:50 you have sensors class, from 1:00 to 2:00 you have brake, and today you have english lab from 2:00",
+        "friday" : "Boss today you have a full day of classes from 9:00 to 9:50 you have Biology class, from 10:00 to 10:50 you have data structures class, from 11:00 to 12:50 you have Elements of computing class, from 1:00 to 2:00 you have brake, and today you have Electronics lab from 2:00",
+        "saturday" : "Boss today you have a full day of classes from 9:00 to 11:50 you have maths lab, from 12:00 to 12:50 you have english class, from 1:00 to 2:00 you have brake, and today you have elements of computing lab from 2:00",
+        "sunday":"Boss today is holiday but we can't say anything when they will bomb with any assisgnments"}
+        if day in Week.keys():
+            self.talk(Week[day])
+def InternetSpeed():
+        speak("Wait a few seconds boss, checking your internet speed")
+        st = speedtest.Speedtest()
+        dl = st.download()
+        dl = dl/(1000000) #converting bytes to megabytes
+        up = st.upload()
+        up = up/(1000000)
+        speak(f"Boss, we have {dl} megabytes per second downloading speed and {up} megabytes per second uploading speed")
 def VideoTextAdder():
     location = input("Enter The location of video:")
     text = input("Enter the text to add on Video:")
@@ -280,11 +316,69 @@ def spotify():
 
 
 
+def Covid(s):
+        try:
+            from covid_india import states
+            details = states.getdata()
+            if "check in" in s:
+                s = s.replace("check in","").strip()
+                print(s)
+            elif "check" in s:
+                s = s.replace("check","").strip()
+                print(s)
+            elif "tech" in s:
+                s = s.replace("tech","").strip()
+            s = state[s]
+            ss = details[s]
+            Total = ss["Total"]
+            Active = ss["Active"]
+            Cured = ss["Cured"]
+            Death = ss["Death"]
+            print(f"Boss the total cases in {s} are {Total}, the number of active cases are {Active}, and {Cured} people cured, and {Death} people are death")
+            speak(f"Boss the total cases in {s} are {Total}, the number of active cases are {Active}, and {Cured} people cured, and {Death} people are death")
+            time.sleep(5)
+            speak("Boss do you want any information of other states")
+            I = myCommand()
+            print(I)
+            if ("check" in I):
+                Covid(I)
+            elif("no" in I):
+                speak("Okay boss stay home stay safe")
+            else:
+                speak("Okay boss stay home stay safe")
+        except:
+            speak("Boss some error occured, please try again")
+            speak("Boss do you want any information of other states")
+            I = myCommand
+            if("yes" in I):
+                speak("boss, Which state covid status do u want to check")
+                Sta = myCommand
+                Covid(Sta)
+            elif("no" in I):
+                speak("Okay boss stay home stay safe")
+
+def condition():
+        usage = str(psutil.cpu_percent())
+        speak("CPU is at"+usage+" percentage")
+        battray = psutil.sensors_battery()
+        percentage = battray.percent
+        speak(f"Boss our system have {percentage} percentage Battery")
+        if percentage >=75:
+            speak(f"Boss we could have enough charging to continue our work")
+        elif percentage >=40 and percentage <=75:
+            speak(f"Boss we should connect out system to charging point to charge our battery")
+        elif percentage >=15 and percentage <=30:
+            speak(f"Boss we don't have enough power to work, please connect to charging")
+        else:
+            speak(f"Boss we have very low power, please connect to charging otherwise the system will shutdown very soon")
 
 
 
-
-
+greetMe()
+speak("Initialising system")
+speak("Security Check is going on")
+speak('Hello Boss, I am your digital ULTRON')
+speak('i will Work always for you')
 
   
 if __name__ == "__main__":
@@ -308,6 +402,13 @@ if __name__ == "__main__":
                     read()
                 except:
                    speak("no query selected plz select a query")
+            if "Covid" or "Corona" in query:
+                Covid()
+            if "check Net speed" or "Speed of net"  in query:
+                InternetSpeed()
+            if "Condition of our system" or "System condition" in query:
+                speak("checking the condition of system Boss")
+                condition()
 
             if "translate this" in query:
                 translator()
@@ -321,8 +422,6 @@ if __name__ == "__main__":
             if "news from home" in query:
                 AjaTak()
             
-            if "class" in query:
-                MsTeam.Team()
 
                 
                 
@@ -1059,5 +1158,4 @@ if __name__ == "__main__":
                     speak('i can not find the information sir')
             
             speak('Next Command! Sir!')
-
 
